@@ -4,17 +4,14 @@
 
 type Props = {
   error: Error;
-  reset: () => void;
 };
 
-const Error = ({ error, reset }: Props) => {
+const ErrorMessage = ({ error }: Props) => {
   return (
     <div>
-      <h2>Помилка при завантаженні</h2>
-      <p>{error.message}</p>
-      <button onClick={reset}>Спробувати знову</button>
+      <p>Could not fetch the list of notes. {error.message}</p>
     </div>
   );
 };
 
-export default Error;
+export default ErrorMessage;
