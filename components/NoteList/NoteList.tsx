@@ -41,21 +41,20 @@ const NoteList: React.FC<NoteListProps> = ({ notes }) => {
           <p className={css.content}>{content}</p>
           <div className={css.footer}>
             <span className={css.tag}>{tag}</span>
-            <div className={css.actions}>
-              {id && (
-                <Link className={css.link} href={`/notes/${id}`}>
-                  View details
-                </Link>
-              )}
 
-              <button
-                className={css.button}
-                onClick={() => mutate(id)}
-                disabled={deletingId === id}
-              >
-                {deletingId === id ? "Deleting..." : "Delete"}
-              </button>
-            </div>
+            {id && (
+              <Link className={css.link} href={`/notes/${id}`}>
+                View details
+              </Link>
+            )}
+
+            <button
+              className={css.button}
+              onClick={() => mutate(id)}
+              disabled={deletingId === id}
+            >
+              {deletingId === id ? "Deleting..." : "Delete"}
+            </button>
           </div>
         </li>
       ))}
