@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { useDebounce } from "use-debounce";
 
@@ -30,15 +30,20 @@ const Notes: React.FC<NotesProps> = ({
   initialSearch,
   initialData,
 }) => {
-  const [search, setSearch] = useState<string>(initialSearch);
+  const [searchInput, setSearchInput] = useState<string>(initialSearch);
+
   const [page, setPage] = useState<number>(initialPage);
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
 
   // debounce значення для пошуку
-  const [debouncedSearch] = useDebounce(search, 500);
+  const [debouncedSearch] = useDebounce(searchInput, 500);
+
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearch]);
 
   const { data, isLoading, isError, error } = useQuery<NotesResponse, Error>({
-    queryKey: ["notes", { page, search: debouncedSearch }],
+    queryKey: ["notes", debouncedSearch, page],
     queryFn: () => fetchNotes({ page, search: debouncedSearch }),
     placeholderData: keepPreviousData,
     initialData:
@@ -49,8 +54,7 @@ const Notes: React.FC<NotesProps> = ({
   });
 
   const handleSearch = useCallback((searchText: string) => {
-    setPage(1);
-    setSearch(searchText);
+    setSearchInput(searchText);
   }, []);
 
   const handlePageChange = useCallback((newPage: number) => {
@@ -64,9 +68,9 @@ const Notes: React.FC<NotesProps> = ({
     <div className={css.app}>
       <header className={css.toolbar}>
         <SearchBox
-          value={search}
-          onChange={setSearch}
-          onSearch={handleSearch}
+          value={searchInput}
+          onChange={handleSearch}
+          onSearch={() => {}}
         />
 
         {data?.totalPages && data.totalPages > 1 && (

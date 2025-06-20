@@ -3,7 +3,7 @@ export interface Note {
   title: string;
   content: string;
   tag: Tag;
-  isArchived: boolean;
+
   createdAt: string;
   updatedAt: string;
 }
