@@ -5,11 +5,12 @@ export interface Note {
   tag: Tag;
   isArchived: boolean;
   createdAt: string;
+  updatedAt: string;
 }
 
 export interface CreateNoteData {
   title: string;
-  content?: string;
+  content: string;
   tag: Tag;
 }
 export enum Tag {

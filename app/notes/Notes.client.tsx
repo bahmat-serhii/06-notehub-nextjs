@@ -14,16 +14,24 @@ import { fetchNotes } from "../../lib/api";
 import type { Note } from "../../types/note";
 import ErrorMessage from "./error";
 
-const PER_PAGE = 12;
-
 interface NotesResponse {
   notes: Note[];
   totalPages: number;
 }
 
-const Notes: React.FC = () => {
-  const [search, setSearch] = useState<string>("");
-  const [page, setPage] = useState<number>(1);
+interface NotesProps {
+  initialPage: number;
+  initialSearch: string;
+  initialData: NotesResponse;
+}
+
+const Notes: React.FC<NotesProps> = ({
+  initialPage,
+  initialSearch,
+  initialData,
+}) => {
+  const [search, setSearch] = useState<string>(initialSearch);
+  const [page, setPage] = useState<number>(initialPage);
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
 
   // debounce значення для пошуку
@@ -31,9 +39,13 @@ const Notes: React.FC = () => {
 
   const { data, isLoading, isError, error } = useQuery<NotesResponse, Error>({
     queryKey: ["notes", { page, search: debouncedSearch }],
-    queryFn: () =>
-      fetchNotes({ page, perPage: PER_PAGE, search: debouncedSearch }),
+    queryFn: () => fetchNotes({ page, search: debouncedSearch }),
     placeholderData: keepPreviousData,
+    initialData:
+      page === initialPage && debouncedSearch === initialSearch
+        ? initialData
+        : undefined,
+    refetchOnMount: false,
   });
 
   const handleSearch = useCallback((searchText: string) => {

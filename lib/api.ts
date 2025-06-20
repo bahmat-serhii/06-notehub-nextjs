@@ -13,7 +13,7 @@ const axiosInstance = axios.create({
 
 interface FetchNotesParams {
   page: number;
-  perPage: number;
+
   search?: string;
 }
 
@@ -24,10 +24,10 @@ interface FetchNotesResponse {
 
 export const fetchNotes = async ({
   page,
-  perPage,
+
   search,
 }: FetchNotesParams): Promise<FetchNotesResponse> => {
-  const params: Record<string, string | number> = { page, perPage };
+  const params: Record<string, string | number> = { page };
 
   if (search && search.trim() !== "") {
     params.search = search;
@@ -49,14 +49,7 @@ export const deleteNote = async (id: number): Promise<Note> => {
   return response.data;
 };
 
-export async function fetchNoteById(id: number): Promise<Note> {
-  const res = await fetch(`${BASE_URL}/notes/${id}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  if (!res.ok) {
-    throw new Error("Failed to fetch note");
-  }
-  return res.json();
-}
+export const fetchNoteById = async (id: number): Promise<Note> => {
+  const response = await axiosInstance.get<Note>(`/notes/${id}`);
+  return response.data;
+};
